@@ -1,0 +1,7 @@
+{
+    "pathMatch": [
+        ".*"
+    ],
+    "port": 8965,
+    "cmd": "go run *.go"
+}

@@ -3,7 +3,6 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-        <title>{{ .title }}</title>
         <style>
             * {
                 padding: 0;
@@ -16,21 +15,47 @@
                 width: 100%;
                 top: 0;
                 left: 0;
+                display: none;
             }
         </style>
+        <title>{{ .title }}</title>
     </head>
     <body>
         <h1>{{ .body }}</h1>
-        <div style="position: relative;">
-            <iframe class="tx-video" frameborder="0" width="16" height="9" src="https://v.qq.com/iframe/player.html?vid=o010344m0zy&tiny=0&auto=0"
-                allowfullscreen></iframe>
+        <div id="comment">
         </div>
-        
-        <script>
-            var iframe = document.querySelector('iframe')
-            var html = iframe.outerHTML
-            var [,width, height] = html.match(/width="(\d+)"\s+height="(\d+)"/)
-            iframe.parentElement.style.cssText += ';padding-top:' + height/width*100 + '%;'
+        <textarea name="" id="" cols="30" rows="10"></textarea>
+        <button id="commit">提交</button>
+        <script> 
+            function $(s) {
+                return document.querySelector(s)
+            }
+            const $comment = $('#comment')
+
+            function update() {
+                fetch('/api/comments').then(r => r.json()).then(({ list = []}) => {
+                    $comment.innerHTML = list.map(item => {
+                        return `<div>${item}</div>`
+                    }).join('')
+                })
+            }
+
+            function commit(content) {
+                const headers = new Headers()
+                headers.append("Content-Type", "text/json")
+                fetch('/api/comments/add?content='+ content, {
+                    headers,
+                    method: 'post'
+                }).then(r => r.json())
+                .then(() => {
+                    update()
+                })
+            }
+
+            update()
+            $('#commit').addEventListener('click', () => {
+                commit($('textarea').value)
+            })
         </script>
     </body>
 </html>

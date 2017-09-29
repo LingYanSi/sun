@@ -5,4 +5,4 @@ linux:
 	gox -osarch="linux/amd64"
 
 run:
-	go run *.go
+	lywatch --cmd="go run *.go" --port="8965"
