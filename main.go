@@ -3,18 +3,32 @@ package main
 import (
 	"sun/controller"
 	"sun/core"
+	"sun/mds"
 )
 
 func main() {
 	f := core.Default()
-	f.Add("/", &controller.Index{})
-	f.Add("/404", &controller.NotFound{})
-	f.Add("/my", &controller.Index{})
-	f.Add("/api/post", &controller.SJSON{})
-	f.Add("/api/comments", &controller.Comments{})
-	f.Add("/api/comments/add", &controller.Comments{})
-	f.Add("/api/delete/redis", &controller.DeleteRedis{})
-	f.NotMatch("/404")
+	// 处理静态资源路径
+	f.Use(mds.Login())
+	f.Use(mds.Static("/static"))
+	f.Use(mds.Favicon("/static/favicon.ico"))
+
+	// 添加路由
+	routerMd, routers := mds.SRouter()
+
+	routers.Add("/", &controller.Index{})
+	routers.Add("/list", &controller.List{})
+	routers.Add("/publish", &controller.Publish{})
+	routers.Add("/detail", &controller.Detail{})
+	routers.Add("/404", &controller.NotFound{})
+
+	routers.Add("/api/post", &controller.SJSON{})
+	routers.Add("/api/comments", &controller.Comments{})
+	routers.Add("/api/comments/add", &controller.Comments{})
+	routers.Add("/api/delete/redis", &controller.DeleteRedis{})
+	routers.NotMatch("/404") // 404页面处理
+	f.Use(routerMd)
+
 	f.Listen("8965")
 }
 

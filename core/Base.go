@@ -24,7 +24,7 @@ type J map[string]interface{}
 type Router interface {
 	Init() // 初始化
 	JSON(j J)
-	HTML(path string, data interface{})
+	HTML(path string, data J)
 	Text(content string)
 	GET()
 	POST()
@@ -72,10 +72,10 @@ func (c *Base) Exec(router Router, method string) {
 
 	c.Input = c.getPostData() // 获取请求数据
 
-	// 返回status code
+	// 返回status code，需要注意的是code需要在header.set之后射入
 	// c.Res.WriteHeader(200)
 	// 缓存控制
-	c.SetHeader("Cache-Control", "max-age=0")
+	// c.SetHeader("Cache-Control", "max-age=0")
 	// 初始化请求，可用于log等等等
 	router.Init()
 	// 有过有Any实现就使用，反则调用相应的Method实现
@@ -128,23 +128,37 @@ func (c *Base) Any() {
 
 // Redirect 处理跳转
 func (c *Base) Redirect(path string) {
-	c.Res.WriteHeader(301)
 	c.SetHeader("Location", path)
+	c.Res.WriteHeader(302)
 }
 
 // HTML 返回html
-func (c *Base) HTML(path string, data interface{}) {
+func (c *Base) HTML(path string, data J) {
 	// 加载模板然后渲染
 	c.SetHeader("Content-Type", "text/html; charset=utf8")
 	filename := "views/" + path + ".html"
-	tmpl := template.New("index")
-	tmpl, err := tmpl.ParseFiles(filename)
+	header := "views/common/header.html"
+	footer := "views/common/footer.html"
+	// 添加函数，用来执行
+	tmpl := template.New("index").Funcs(template.FuncMap{
+		"getPath": func(path string) string {
+			return path + "?version=0.0.1"
+		},
+	})
+	tmpl, err := tmpl.ParseFiles(header, footer, filename)
 	// Error checking elided
 	if err != nil {
 		fmt.Println("模板解析出错: "+filename, err)
 	}
 	// 如果使用PareseFiles解析文件模板，需要使用ExecuteTemplate来进行数据渲染
-	tmpl.ExecuteTemplate(c.Res, path+".html", data)
+	err = tmpl.ExecuteTemplate(
+		c.Res,
+		path+".html",
+		data,
+	)
+	if err != nil {
+		fmt.Println("模板渲染出错: "+filename, err)
+	}
 }
 
 // JSON 返回json
@@ -168,6 +182,17 @@ func (c *Base) Text(content string) {
 	c.Res.Write([]byte(content))
 }
 
+func mergeMap(map1 J, map2 J) interface{} {
+	newMap := J{}
+	for key, value := range map1 {
+		newMap[key] = value
+	}
+	for key, value := range map2 {
+		newMap[key] = value
+	}
+	return newMap
+}
+
 // getPostData 获取post请求数据
 func (c *Base) getPostData() Input {
 	// 解析请求参数
@@ -176,7 +201,7 @@ func (c *Base) getPostData() Input {
 	req := c.Req
 	// 如果Content-Type 包含json字段，
 	if strings.Contains(req.Header.Get("Content-Type"), "text/json") || strings.Contains(req.Header.Get("content-type"), "text/json") {
-		// 解析json
+		// 解析json，对于post数据的获取需要先ParseForm
 		decoder := json.NewDecoder(req.Body)
 		err := decoder.Decode(&t)
 		if err != nil {

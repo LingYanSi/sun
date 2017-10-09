@@ -1,61 +1,64 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-        <style>
-            * {
-                padding: 0;
-                margin: 0;
-            }
-            .tx-video {
-                border: none;
-                position: absolute;
-                height: 100%;
-                width: 100%;
-                top: 0;
-                left: 0;
-                display: none;
-            }
-        </style>
-        <title>{{ .title }}</title>
-    </head>
-    <body>
-        <h1>{{ .body }}</h1>
-        <div id="comment">
-        </div>
-        <textarea name="" id="" cols="30" rows="10"></textarea>
-        <button id="commit">提交</button>
-        <script> 
-            function $(s) {
-                return document.querySelector(s)
-            }
-            const $comment = $('#comment')
+{{template "header" .}}
+<div id="page-home">
+    <div class="screen" style="background-image: url(/static/imgs/home-1.jpg);">
+        <a href="/list">接活</a>
+    </div>
+    <div class="screen" style="background-image: url(/static/1.gif);">
+        <a href="/publish">发活</a>
+    </div>
+</div>
+<div class="hide">
+    <h1>{{ .body }}</h1>
+    <div id="comment">
+    </div>
+    <textarea name="" id="" cols="30" rows="10"></textarea>
+    <button id="commit">提交</button>
+</div>
+<script> 
+    function load(fn) {
+        const STATE = document.readyState
+        if (STATE === 'interactive' || STATE === 'complete') {
+            fn()
+        } else {
+            document.addEventListener('readystatechange', () => {
+                if (document.readyState === 'interactive') {
+                    fn()
+                }
+            })
+        }
+    }
+    function $(s) {
+        return document.querySelector(s)
+    }
+    load(() => {
+        const $comment = $('#comment')
 
-            function update() {
-                fetch('/api/comments').then(r => r.json()).then(({ list = []}) => {
-                    $comment.innerHTML = list.map(item => {
-                        return `<div>${item}</div>`
-                    }).join('')
-                })
-            }
+        function update() {
+            fetch('/api/comments').then(r => r.json()).then(({ list = [] }) => {
+                $comment.innerHTML = list.map(item => {
+                    return `<div>${item}</div>`
+                }).join('')
+            })
+        }
 
-            function commit(content) {
-                const headers = new Headers()
-                headers.append("Content-Type", "text/json")
-                fetch('/api/comments/add?content='+ content, {
-                    headers,
-                    method: 'post'
-                }).then(r => r.json())
+        function commit(content) {
+            const headers = new Headers()
+            headers.append("Content-Type", "text/json")
+            fetch('/api/comments/add?content=' + content, {
+                headers,
+                method: 'post'
+            }).then(r => r.json())
                 .then(() => {
                     update()
                 })
-            }
+        }
 
-            update()
-            $('#commit').addEventListener('click', () => {
-                commit($('textarea').value)
-            })
-        </script>
-    </body>
-</html>
+        update()
+        $('#commit').addEventListener('click', () => {
+            commit($('textarea').value)
+            $('textarea').value = ""
+        })
+    })
+    
+</script>
+{{template "footer" .}}    

@@ -7,7 +7,7 @@ import (
 	"sun/util"
 )
 
-// Home 处理主页
+// Comments 处理评论
 type Comments struct {
 	core.Base
 }
@@ -32,6 +32,7 @@ func (this *Comments) POST() {
 	// 允许跨域请求
 	this.JSON(core.J{
 		"code": 0,
+		"msg":  "插入成功",
 	})
 }
 

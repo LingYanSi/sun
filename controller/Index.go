@@ -30,17 +30,20 @@ func (c *Index) Init() {
 func (c *Index) GET() {
 	// 允许跨域请求
 	c.Allow()
+	// c.SetHeader("Content-Type", "text/html; charset=utf8")
+	// c.Res.WriteHeader(200)
 
-	c.SetHeader("add", "b b b")
-	c.SetHeader("add", "---")
 	name, err := c.Redis.Get("name").Result()
 	if err != nil {
 		name = "出错了"
 	}
 	fmt.Println("redis name:", name)
 	c.HTML("index", core.J{
-		"title": "找不到404",
-		"body":  "念去去千里烟波" + name,
+		"title": "首页",
+		"body":  "我是body: " + name,
+		"data": core.J{
+			"title": "哈哈哈哈哈",
+		},
 	})
 }
 

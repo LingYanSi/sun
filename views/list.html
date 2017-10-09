@@ -1,0 +1,29 @@
+{{template "header" .}}
+<style>
+    .list-item {
+        width: 400px;
+        height: 400px;
+        position: relative;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-color: rgb(200, 240, 10);
+        display: inline-block;
+    }
+    .list-item-info {
+        position: absolute;
+        bottom: 0;
+        color: #fff;
+    }
+</style>
+<div id="page-list">
+    {{range .list}}
+        <div class="list-item" style="background-image: url({{ .pics }});">
+            <div class="list-item-info">
+                <h1>{{.name}}</h1>
+                <p>{{.des}}</p>
+            </div>
+        </div>
+    {{end}}
+</div>
+{{template "footer" .}}

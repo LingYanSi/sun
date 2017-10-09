@@ -11,7 +11,7 @@ type SJSON struct {
 
 // Any 处理get请求
 func (this *SJSON) POST() {
-	this.Redis.Set("name", "宋小帆", 0)
+	this.Redis.Set("name", "个屁", 0)
 	// 允许跨域请求
 	this.JSON(core.J{
 		"Name": 1,

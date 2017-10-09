@@ -1,0 +1,44 @@
+{{template "header" .}}
+<div id="page-publish">
+    <h1>发布需求</h1>
+    <form action="/publish" method="POST">
+        <div>
+            <label for="">项目名称</label>
+            <input type="text" name="name">
+        </div>
+        <div>
+            <label for="">图片</label>
+            <input type="text" name="pics" id="">
+        </div>
+        <div>
+            <label for="">项目描述</label>
+            <textarea name="des" id="" cols="30" rows="10"></textarea>
+        </div>
+        <div>
+            <label for="">联系方式</label>
+            <input type="text" name="tel">
+        </div>
+        <div>
+            <label for="">价格</label>
+            <input type="text" name="price">
+        </div>
+        <div>
+            <label for="">周期</label>
+            <input type="text" name="time">
+        </div>
+        <div>
+            <label for="">需求文档</label>
+            <input type="text" name="doc">
+        </div>
+        <div>
+            <label for="">UI</label>
+            <input type="text" name="ui">
+        </div>
+        <div>
+            <label for="">指定城市</label>
+            <input type="text" name="city">
+        </div>
+        <button type="submit">提交</button>
+    </form>
+</div>
+{{template "footer" .}}
