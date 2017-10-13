@@ -3,19 +3,21 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"sun/core"
+	"sun/model"
 )
 
 type M struct {
-	Name  string `json:"name"` // 需求名称
-	Pics  string `json:"pics"` // 图片
-	Des   string `json:"des"`  // 描述
-	Tel   string // 电话
-	Price int    // 价格
-	Time  string // 周期
-	Doc   string // 文档
-	Ui    string // ui
-	City  string // 城市
+	Name  string `json:"name"`  // 需求名称
+	Pics  string `json:"pics"`  // 图片
+	Des   string `json:"des"`   // 描述
+	Tel   string `json:"tel"`   // 电话
+	Price int    `json:"price"` // 价格
+	Time  string `json:"time"`  // 周期
+	Doc   string `json:"doc"`   // 文档
+	UI    string `json:"ui"`    // ui
+	City  string `json:"city"`  // 城市
 }
 
 // Index 处理主页
@@ -46,30 +48,55 @@ func getString(data interface{}) string {
 	}
 }
 
+func getInt(data interface{}) int {
+	switch data.(type) {
+	case int:
+		return data.(int)
+	case string:
+		num, err := strconv.Atoi(data.(string))
+		if err != nil {
+			return -1
+		}
+		return num
+	default:
+		return -1
+	}
+}
+
 func (this *Publish) POST() {
-	model := M{}
+	data := M{}
 	// 数据校验
-	if model.Name = getString(this.Input("name")); model.Name == "" {
+	if data.Name = getString(this.Input("name")); data.Name == "" {
 		this.handleErr("项目标题不能为空")
 		return
 	}
 
-	if model.Pics = getString(this.Input("pics")); model.Pics == "" {
+	if data.Pics = getString(this.Input("pics")); data.Pics == "" {
 		this.handleErr("项目图片不能为空")
 		return
 	}
 
-	if model.Des = getString(this.Input("des")); model.Des == "" {
+	if data.Des = getString(this.Input("des")); data.Des == "" {
 		this.handleErr("项目描述不能为空")
 		return
 	}
 
-	result, err := json.Marshal(model)
+	if data.Tel = getString(this.Input("tel")); data.Tel == "" {
+		this.handleErr("手机号码不能为空")
+		return
+	}
+
+	if data.Price = getInt(this.Input("price")); data.Price == -1 {
+		this.handleErr("价格不能为空")
+		return
+	}
+
+	result, err := json.Marshal(data)
 	if err != nil {
 		fmt.Println("json encode失败", err)
 	}
 	fmt.Println("获取result: ", string(result))
-	this.Redis.LPush("lists", string(result))
+	model.Redis.LPush("lists", string(result))
 
 	this.Redirect("/list")
 	// this.JSON(core.J{

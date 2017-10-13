@@ -9,6 +9,7 @@ import (
 	"sun/core"
 )
 
+// getFileType获取文件content-type
 func getFileType(ext string) string {
 	fileType := ""
 	switch ext {
@@ -50,7 +51,7 @@ func Static(dir ...string) core.Md {
 					if fileType := getFileType(ext); fileType != "" {
 						res.Header().Set("content-type", fileType)
 					}
-					res.Header().Set("cache-control", "max-age=0")
+					res.Header().Set("cache-control", "max-age=2560000")
 					// 类似于node里的stream
 					io.Copy(res, file)
 				}

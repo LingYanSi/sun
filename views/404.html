@@ -1,17 +1,15 @@
 {{template "header" .}}
-<h1>{{ .body }}</h1>
-<h1>来到了sun之荒原</h1>
-<script>
-    function render(data) {
-        const div = document.createElement('pre')
-        div.innerHTML = JSON.stringify(data, null, 4)
-        document.body.appendChild(div)
+<style>
+    .center {
+        position: absolute;
+        top: 30%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 100%;
+        text-align: center;
     }
-    fetch('/api/post', {
-        method: "post"
-    }).then(res => res.json())
-    .then(data => {
-        render(data)
-    })
-</script>
+</style>
+<div class="screen">
+    <h1 class="center">你来到了荒原之地</h1>
+</div>
 {{template "footer" .}}

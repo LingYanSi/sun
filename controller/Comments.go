@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 	"sun/core"
+	"sun/model"
 	"sun/util"
 )
 
@@ -23,7 +24,7 @@ func (this *Comments) POST() {
 	case string:
 		// 去除空格
 		if strings.TrimSpace(c) != "" {
-			this.Redis.LPush("comments", c)
+			model.Redis.LPush("comments", c)
 		} else {
 			fmt.Println("content is empty!")
 		}
@@ -38,7 +39,7 @@ func (this *Comments) POST() {
 
 // GET 处理get请求
 func (this *Comments) GET() {
-	comments := this.Redis.LRange("comments", 0, 100).Val()
+	comments := model.Redis.LRange("comments", 0, 100).Val()
 	// 反转数组
 	comments = util.Reverse(comments)
 

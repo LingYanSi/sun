@@ -1,44 +1,78 @@
 {{template "header" .}}
+<style>
+    .form-item {
+        margin: 10px;
+        display: flex;
+        line-height: 1.8;
+    }
+    .form-item>label {
+        width: 5em;
+        text-align: right;
+    }
+    .form-item>label:after {
+        content: ":";
+    }
+    .form-item>.input {
+        flex: 1;
+        padding: 0 10px;
+    }
+    .form-item>label + .input {
+        margin-left: 10px;
+    }
+
+    button {
+        flex: 1;
+        display: block;
+        line-height: 2;
+    }
+    @media (min-width: 1000px) {
+        #page-publish {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+    }
+</style>
 <div id="page-publish">
-    <h1>发布需求</h1>
     <form action="/publish" method="POST">
-        <div>
+        <div class="form-item">
             <label for="">项目名称</label>
-            <input type="text" name="name">
+            <input class="input" type="text" name="name">
         </div>
-        <div>
+        <div class="form-item">
             <label for="">图片</label>
-            <input type="text" name="pics" id="">
+            <input class="input" type="text" name="pics" id="">
         </div>
-        <div>
+        <div class="form-item">
             <label for="">项目描述</label>
-            <textarea name="des" id="" cols="30" rows="10"></textarea>
+            <textarea class="input" name="des" id="" cols="30" rows="10"></textarea>
         </div>
-        <div>
+        <div class="form-item">
             <label for="">联系方式</label>
-            <input type="text" name="tel">
+            <input class="input" type="tel" name="tel">
         </div>
-        <div>
+        <div class="form-item">
             <label for="">价格</label>
-            <input type="text" name="price">
+            <input class="input" type="number" name="price">
         </div>
-        <div>
+        <div class="form-item">
             <label for="">周期</label>
-            <input type="text" name="time">
+            <input class="input" type="time" name="time">
         </div>
-        <div>
+        <div class="form-item">
             <label for="">需求文档</label>
-            <input type="text" name="doc">
+            <input class="input" type="text" name="doc">
         </div>
-        <div>
+        <div class="form-item">
             <label for="">UI</label>
-            <input type="text" name="ui">
+            <input class="input" type="text" name="ui">
         </div>
-        <div>
+        <div class="form-item">
             <label for="">指定城市</label>
-            <input type="text" name="city">
+            <input class="input" type="text" name="city">
         </div>
-        <button type="submit">提交</button>
+        <div class="form-item">
+            <button type="submit">发布</button>
+        </div>
     </form>
 </div>
 {{template "footer" .}}

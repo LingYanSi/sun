@@ -6,11 +6,12 @@ import (
 	"html/template"
 	"net/http"
 	"net/url"
+	"reflect"
 	"regexp"
+	"strconv"
 	"strings"
 	"sun/util"
-
-	"github.com/go-redis/redis"
+	"time"
 )
 
 // 正则匹配等规则 -> 对应一个struct struct实现get/post/all 等方法
@@ -30,7 +31,7 @@ type Router interface {
 	POST()
 	Any()
 	SetHeader(key, value string)
-	SetHTTP(req *http.Request, res http.ResponseWriter, redis *redis.Client)
+	SetHTTP(req *http.Request, res http.ResponseWriter)
 	Exec(r Router, method string)
 }
 
@@ -42,7 +43,6 @@ type Input func(string) interface{}
 type Base struct {
 	Req        *http.Request
 	Res        http.ResponseWriter
-	Redis      *redis.Client // redis
 	Cookies    http.Cookie
 	IP         string // 注意以大写字母开头的属性才能被外部访问，类似于public Name
 	URL        string // 请求path
@@ -55,10 +55,9 @@ type Base struct {
 }
 
 // SetHTTP 设置上下文环境
-func (c *Base) SetHTTP(req *http.Request, res http.ResponseWriter, redis *redis.Client) {
+func (c *Base) SetHTTP(req *http.Request, res http.ResponseWriter) {
 	c.Req = req
 	c.Res = res
-	c.Redis = redis
 }
 
 // Exec 处理请求
@@ -142,7 +141,8 @@ func (c *Base) HTML(path string, data J) {
 	// 添加函数，用来执行
 	tmpl := template.New("index").Funcs(template.FuncMap{
 		"getPath": func(path string) string {
-			return path + "?version=0.0.1"
+			fmt.Println("时间戳类型: ", reflect.TypeOf(time.Now().Unix()))
+			return path + "?version=" + strconv.FormatInt(time.Now().Unix(), 10)
 		},
 	})
 	tmpl, err := tmpl.ParseFiles(header, footer, filename)
@@ -214,9 +214,6 @@ func (c *Base) getPostData() Input {
 		value := t[key]
 		if value == nil {
 			value = c.Query(key)
-		}
-		if value == nil {
-			value = ""
 		}
 		return value
 	}

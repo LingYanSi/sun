@@ -3,6 +3,7 @@ package controller
 import (
 	"fmt"
 	"sun/core"
+	"sun/model"
 )
 
 // Index 处理主页
@@ -33,7 +34,7 @@ func (c *Index) GET() {
 	// c.SetHeader("Content-Type", "text/html; charset=utf8")
 	// c.Res.WriteHeader(200)
 
-	name, err := c.Redis.Get("name").Result()
+	name, err := model.Redis.Get("name").Result()
 	if err != nil {
 		name = "出错了"
 	}

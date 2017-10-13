@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"sun/config"
 
 	"github.com/fatih/color"
 )
@@ -72,9 +73,11 @@ func (f *Sun) Listen(port string) {
 	http.HandleFunc("/", f.handleReq)
 	// 监听端口
 	err := http.ListenAndServe(":"+port, nil) //设置监听的端口
+	// http.TimeoutHandler
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}
+	fmt.Println(config.Name)
 }
 
 func Default() *Sun {

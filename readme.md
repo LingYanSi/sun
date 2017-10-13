@@ -1,7 +1,16 @@
-main.go作为入口文件
-go build 会把当前文件夹下的所有go文件都给编译了，因此文件不能有多个main函数
+# SUN
+go web服务快速开发
 
-hotload
-使用node child_process来启动go
-node监听文件变化，如果发生变化，重启服务
+## hot reload
+使用node来监听文件变化，然后重启go服务
+
+## 
+项目必须创建在 ~/go/src/ 也就是 $GOPATH/src 下
+```bash
+cd $GOPATH/src
+git clone this
+
+make depend
+```
+
 

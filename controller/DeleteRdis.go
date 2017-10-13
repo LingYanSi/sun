@@ -2,6 +2,7 @@ package controller
 
 import (
 	"sun/core"
+	"sun/model"
 )
 
 // DeleteRedis 更新redis
@@ -12,12 +13,12 @@ type DeleteRedis struct {
 // GET 处理get请求
 func (dr *DeleteRedis) GET() {
 	value := dr.Query("key")
-	dr.Redis.Set("name", value, 0)
+	model.Redis.Set("name", value, 0)
 	// hash map 设置 key -> value 形式
-	dr.Redis.HMSet("goods:sale", core.J{
+	model.Redis.HMSet("goods:sale", core.J{
 		"name": "黑呵呵呵呵",
 	})
-	name := dr.Redis.HGet("goods:sale", "name").Val()
+	name := model.Redis.HGet("goods:sale", "name").Val()
 	// 允许跨域请求
 	dr.Text("删除成功" + name)
 }

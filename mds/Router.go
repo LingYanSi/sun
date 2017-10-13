@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/fatih/color"
-	"github.com/go-redis/redis"
 )
 
 type Router core.Router
@@ -19,7 +18,6 @@ type Routers map[string]Router
 type SunRouter struct {
 	routers         Routers
 	notMatchJumpURL string
-	redis           *redis.Client
 }
 
 // Add 添加路由
@@ -49,7 +47,7 @@ func (f *SunRouter) handleReq(res http.ResponseWriter, req *http.Request) {
 		if isMath, _ := getRouter(key, url); isMath {
 			isMathed = true
 			fmt.Println("路由已匹配")
-			handler.SetHTTP(req, res, f.redis)
+			handler.SetHTTP(req, res)
 			handler.Exec(handler, req.Method)
 			break
 		}
@@ -72,12 +70,6 @@ func (f *SunRouter) NotMatch(path string) {
 
 func (f *SunRouter) init() {
 	f.routers = Routers{} // 初始化slice，否则默认为nil
-	client := redis.NewClient(&redis.Options{
-		Addr:     "127.0.0.1:6379",
-		Password: "", // no password set
-		DB:       0,  // use default DB
-	})
-	f.redis = client
 }
 
 // getRouter 获取路由

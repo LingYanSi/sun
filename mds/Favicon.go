@@ -11,14 +11,16 @@ import (
 func Favicon(path string) core.Md {
 	return core.MdCreate(func(req *http.Request, res http.ResponseWriter, next core.Next) core.Next {
 		return func() {
-			path := req.URL.Path
-			if path == "/favicon.ico" {
+			reqPath := req.URL.Path
+			if reqPath == "/favicon.ico" {
 				file, err := os.Open("." + path)
 				if err != nil {
-					next()
+					// 文件不存在
+					res.Write([]byte("file not found"))
 				} else {
 					io.Copy(res, file)
 				}
+				defer file.Close()
 			} else {
 				next()
 			}
