@@ -13,14 +13,14 @@ pro:
 cp:
 	scp sun_linux_amd64 root@108.61.160.163:/root/sun
 
-redis: 
+redis:
 	yum install -y gcc-c++
 	yum install -y tcl
 	yum install -y wget
 
 	# 下载 https://redis.io/ 下载最新稳定版本
 	wget http://download.redis.io/releases/redis-4.0.2.tar.gz
-	tar -xzvf redis-4.0.2.tar.gz 
+	tar -xzvf redis-4.0.2.tar.gz
 
 	# 安装
 	cd redis-4.0.2
@@ -40,7 +40,7 @@ redis:
 	sed -i "s/daemonize\s\+no/daemonize yes/g" /etc/redis/redis.conf
 
 	# 启动redis 并制定配置文件
-	redis-server /etc/redis/redis.conf 
+	redis-server /etc/redis/redis.conf
 
 depend:
 	go get github.com/fatih/color
